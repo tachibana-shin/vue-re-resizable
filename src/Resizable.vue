@@ -62,7 +62,7 @@ import {
 } from "./helpers"
 import Resizer from "./Resizer.vue"
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   grid?: [number, number]
   snap?: {
     x?: number[]
@@ -87,7 +87,26 @@ const props = defineProps<{
   defaultSize?: Partial<Size>
   scale?: number
   resizeRatio?: number
-}>()
+}>(), {
+  enable: {
+    top: true,
+    right: true,
+    bottom: true,
+    left: true,
+    topRight: true,
+    bottomRight: true,
+    bottomLeft: true,
+    topLeft: true
+  },
+  // eslint-disable-next-line vue/require-valid-default-prop
+  grid: [1, 1],
+  lockAspectRatio: false,
+  lockAspectRatioExtraWidth: 0,
+  lockAspectRatioExtraHeight: 0,
+  scale: 1,
+  resizeRatio: 1,
+  snapGap: 0
+})
 const emit = defineEmits<{
   (
     name: "resize:start",
@@ -302,6 +321,7 @@ let targetLeft = 0
 let targetTop = 0
 
 onMounted(() => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const computedStyle = window.value!.getComputedStyle(resizable.value!)
   widthRet.value = widthRet.value ?? size.value.width
   heightRet.value = heightRet.value ?? size.value.height

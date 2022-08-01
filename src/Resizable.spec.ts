@@ -1,5 +1,5 @@
 import { describe, test, expect, afterEach } from "vitest"
-import { render, screen, fireEvent, cleanup } from "@testing-library/vue"
+import { render, fireEvent, cleanup } from "@testing-library/vue"
 import Resizable from "./Resizable.vue"
 
 function is(a: unknown, b: unknown) {
@@ -63,7 +63,7 @@ describe("Resizable", () => {
     is(divs[1].style.position, "relative")
   })
 
-  test("should box width and height equal auto when size omitted", async t => {
+  test("should box width and height equal auto when size omitted", () => {
     const { baseElement } = render(Resizable, {
       props: {}
     })
@@ -76,7 +76,7 @@ describe("Resizable", () => {
     expect(divs[1].style.position).toEqual("relative")
   })
 
-  test("should box width and height equal auto when set auto", async t => {
+  test("should box width and height equal auto when set auto", () => {
     const { baseElement } = render(Resizable, {
       props: {
         width: "auto",
@@ -92,7 +92,7 @@ describe("Resizable", () => {
     expect(divs[1].style.position).toEqual("relative")
   })
 
-  test("Should style is applied to box", async t => {
+  test("Should style is applied to box", () => {
     const { baseElement } = render(Resizable, {
       props: {
         style: {
@@ -107,7 +107,7 @@ describe("Resizable", () => {
     is(divs[1].style.position, "absolute")
   })
 
-  test("Should custom class name be applied to box", async t => {
+  test("Should custom class name be applied to box", () => {
     const { baseElement } = render(Resizable, {
       props: {
         style: {
@@ -123,7 +123,7 @@ describe("Resizable", () => {
     is(divs[1].className, "custom-class-name")
   })
 
-  test("Should custom class name be applied to resizer", async t => {
+  test("Should custom class name be applied to resizer", () => {
     const { baseElement } = render(Resizable, {
       props: {
         resizerClasses: {
@@ -132,13 +132,13 @@ describe("Resizable", () => {
       }
     })
 
-    const divs = baseElement.querySelectorAll("div")
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const node = baseElement.querySelector(".right-handle-class")!
 
     expect(node).not.toEqual(null)
   })
 
-  test("Should create custom span that wraps resizable divs ", async t => {
+  test("Should create custom span that wraps resizable divs ", () => {
     const { baseElement } = render(Resizable, {
       props: {
         class: "wrapper-class"
@@ -150,7 +150,7 @@ describe("Resizable", () => {
     is(divs[1].getAttribute("class"), "wrapper-class")
   })
 
-  test("Should not render resizer when enable props all false", async t => {
+  test("Should not render resizer when enable props all false", () => {
     const { baseElement } = render(Resizable, {
       props: {
         enable: {
@@ -170,7 +170,7 @@ describe("Resizable", () => {
     is(divs.length, 2)
   })
 
-  test("Should render one resizer when one enable props set true", async t => {
+  test("Should render one resizer when one enable props set true", () => {
     const { baseElement } = render(Resizable, {
       props: {
         enable: {
@@ -190,7 +190,7 @@ describe("Resizable", () => {
     is(divs.length, 3)
   })
 
-  test("Should render two resizer when two enable props set true", async t => {
+  test("Should render two resizer when two enable props set true", () => {
     const { baseElement } = render(Resizable, {
       props: {
         enable: {
@@ -210,7 +210,7 @@ describe("Resizable", () => {
     is(divs.length, 4)
   })
 
-  test("Should render three resizer when three enable props set true", async t => {
+  test("Should render three resizer when three enable props set true", () => {
     const { baseElement } = render(Resizable, {
       props: {
         enable: {
@@ -230,7 +230,7 @@ describe("Resizable", () => {
     is(divs.length, 5)
   })
 
-  test("Should only right is resizable and call onResizeStart when mousedown", async t => {
+  test("Should only right is resizable and call onResizeStart when mousedown", () => {
     const { baseElement } = render(Resizable, {
       props: {
         enable: {

@@ -20,7 +20,7 @@
     "test": "vitest run",
     "prepublish": "npm run build",
     "format": "prettier --write '**/*.{tsx,ts}'",
-    "release": "bumpp package.json --commit --push --tag && pnpm -r publish --access public"
+    "release": "pnpm lint && pnpm test && bumpp package.json --commit --push --tag && pnpm -r publish --access public"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "bumpp": "^8.2.1",
     "cross-env": "7.0.3",
     "eslint": "^8.20.0",
+    "eslint-plugin-vue": "^9.3.0",
     "gh-pages": "3.1.0",
     "jsdom": "^20.0.0",
     "npm-run-all": "4.1.5",
