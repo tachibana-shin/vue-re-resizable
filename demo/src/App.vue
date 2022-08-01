@@ -1,11 +1,28 @@
 <template>
-  <Resizable>
+  <IResizable
+    :defaultSize="{
+      width: '220px',
+      height: '100%'
+    }"
+    maxWidth="60%"
+    minWidth="1"
+    :enable="{
+      top: false,
+      right: true,
+      bottom: false,
+      left: false,
+      topRight: false,
+      bottomRight: false,
+      bottomLeft: false,
+      topLeft: false
+    }"
+  >
     <div>hello</div>
-  </Resizable>
+  </IResizable>
 </template>
 
 <script lang="ts" setup>
-import Resizable from "../../src/index.vue"
+import IResizable from "../../src/index.vue"
 </script>
 
 <style lang="scss" scoped>

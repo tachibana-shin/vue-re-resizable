@@ -62,25 +62,25 @@ const emit = defineEmits<{
     @include colSizeBase;
     left: -5px;
   }
-  &.resizer-top-right {
+  &.resizer-topRight {
     @include edgeBase;
     right: -10px;
     top: -10px;
     cursor: ne-resize;
   }
-  &.resizer-bottom-right {
+  &.resizer-bottomRight {
     @include edgeBase;
     right: -10px;
     bottom: -10px;
     cursor: se-resize;
   }
-  &.resizer-bottom-left {
+  &.resizer-bottomLeft {
     @include edgeBase;
     left: -10px;
     bottom: -10px;
     cursor: sw-resize;
   }
-  &.resizer-top-left {
+  &.resizer-topLeft {
     @include edgeBase;
     left: -10px;
     top: -10px;

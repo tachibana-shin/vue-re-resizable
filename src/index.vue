@@ -19,12 +19,12 @@
 
     <template v-if="enable">
       <Resizer
-        v-for="item in enable"
+        v-for="[item] in Object.entries(enable).filter(([key, val]) => val)"
         :key="item"
         :direction="item"
-        @resize:start="onResizeStart"
-        :style="resizerStyles[item]"
-        :class="handleClasses[item]"
+        @resize:start="onResizeStart($event, item)"
+        :style="resizerStyles?.[item]"
+        :class="resizerClasses?.[item]"
       >
         <slot :name="`resizer-${item}`" />
       </Resizer>
@@ -33,7 +33,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, Ref, ref, withDefaults } from "vue"
+import {
+  computed,
+  reactive,
+  Ref,
+  ref,
+  withDefaults,
+  onMounted,
+  onBeforeMount
+} from "vue"
 import {
   Direction,
   Enable,
@@ -53,56 +61,54 @@ import {
   isTouchEvent,
   snap
 } from "./helpers"
+import Resizer from "./resizer.vue"
 
-const props = withDefaults(
-  defineProps<{
-    grid?: [number, number]
-    snap?: {
-      x?: number[]
-      y?: number[]
-    }
-    snapGap?: number
-    bounds?: "parent" | "window" | HTMLElement
-    boundsByDirection?: boolean
-    size?: Partial<Size>
-    minWidth?: string | number
-    minHeight?: string | number
-    maxWidth?: string | number
-    maxHeight?: string | number
-    lockAspectRatio?: boolean | number
-    lockAspectRatioExtraWidth?: number
-    lockAspectRatioExtraHeight?: number
-    enable?: Enable
-
-    resizerStyles?: ResizerStyles
-    handleClasses?: ResizerClasses
-
-    defaultSize?: Partial<Size>
-    scale?: number
-    resizeRatio?: number
-  }>(),
-  {
-    enable: {
-      top: true,
-      right: true,
-      bottom: true,
-      left: true,
-      topRight: true,
-      bottomRight: true,
-      bottomLeft: true,
-      topLeft: true
-    },
-    style: {},
-    // eslint-disable-next-line vue/require-valid-default-prop
-    grid: [1, 1],
-    lockAspectRatio: false,
-    lockAspectRatioExtraWidth: 0,
-    lockAspectRatioExtraHeight: 0,
-    scale: 1,
-    resizeRatio: 1,
-    snapGap: 0
+interface Props {
+  grid?: [number, number]
+  snap?: {
+    x?: number[]
+    y?: number[]
   }
-)
+  snapGap?: number
+  bounds?: "parent" | "window" | HTMLElement
+  boundsByDirection?: boolean
+  size?: Partial<Size>
+  minWidth?: string | number
+  minHeight?: string | number
+  maxWidth?: string | number
+  maxHeight?: string | number
+  lockAspectRatio?: boolean | number
+  lockAspectRatioExtraWidth?: number
+  lockAspectRatioExtraHeight?: number
+  enable?: Enable
+
+  resizerStyles?: ResizerStyles
+  resizerClasses?: ResizerClasses
+
+  defaultSize?: Partial<Size>
+  scale?: number
+  resizeRatio?: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  enable: {
+    top: true,
+    right: true,
+    bottom: true,
+    left: true,
+    topRight: true,
+    bottomRight: true,
+    bottomLeft: true,
+    topLeft: true
+  },
+  // eslint-disable-next-line vue/require-valid-default-prop
+  grid: [1, 1],
+  lockAspectRatio: false,
+  lockAspectRatioExtraWidth: 0,
+  lockAspectRatioExtraHeight: 0,
+  scale: 1,
+  resizeRatio: 1,
+  snapGap: 0
+})
 const emit = defineEmits<{
   (
     name: "resize:start",
@@ -139,35 +145,36 @@ const propsSize = computed<Size>(() => {
 
   return { width, height }
 })
-const size = computed<NumberSize>(() => {
-  let width = 0
-  let height = 0
-  if (resizable.value && window.value) {
-    const orgWidth = resizable.value.offsetWidth
-    const orgHeight = resizable.value.offsetHeight
-    // HACK: Set position `relative` to get parent size.
-    //       This is because when re-resizable set `absolute`, I can not get base width correctly.
-    const orgPosition = resizable.value.style.position
-    if (orgPosition !== "relative") {
+const size = {
+  get value() {
+    let width = 0
+    let height = 0
+    if (resizable.value && window.value) {
+      const orgWidth = resizable.value.offsetWidth
+      const orgHeight = resizable.value.offsetHeight
+      // HACK: Set position `relative` to get parent size.
+      //       This is because when re-resizable set `absolute`, I can not get base width correctly.
+      const orgPosition = resizable.value.style.position
+      if (orgPosition !== "relative") {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        resizable.value.style.position = "relative"
+      }
+      // INFO: Use original width or height if set auto.
+      width =
+        resizable.value.style.width !== "auto"
+          ? resizable.value.offsetWidth
+          : orgWidth
+      height =
+        resizable.value.style.height !== "auto"
+          ? resizable.value.offsetHeight
+          : orgHeight
+      // Restore original position
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      resizable.value.style.position = "relative"
+      resizable.value.style.position = orgPosition
     }
-    // INFO: Use original width or height if set auto.
-    width =
-      resizable.value.style.width !== "auto"
-        ? resizable.value.offsetWidth
-        : orgWidth
-    height =
-      resizable.value.style.height !== "auto"
-        ? resizable.value.offsetHeight
-        : orgHeight
-    // Restore original position
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    resizable.value.style.position = orgPosition
+    return { width, height }
   }
-
-  return { width, height }
-})
+}
 
 // HACK: This class is used to calculate % size.
 const baseClassName = "__resizable_base__"
@@ -265,7 +272,7 @@ const sizeStyle = computed<Size>(() => {
   const height =
     size && typeof size.height !== "undefined" && !isResizing.value
       ? getStringSize(size.height)
-      : getSize(widthRet, "height")
+      : getSize(heightRet, "height")
   return { width, height }
 })
 
@@ -320,9 +327,9 @@ onMounted(() => {
   widthRet.value = widthRet.value ?? size.value.width
   heightRet.value = heightRet.value ?? size.value.height
   flexBasisRet.value =
-    omputedStyle.flexBasis !== "auto" ? computedStyle.flexBasis : undefined
+    computedStyle.flexBasis !== "auto" ? computedStyle.flexBasis : undefined
 })
-onUnmount(() => {
+onBeforeMount(() => {
   unbindEvents()
 })
 
@@ -367,6 +374,7 @@ function calculateNewSizeFromDirection(clientX: number, clientY: number) {
   let newHeight = original.height
   const extraHeight = lockAspectRatioExtraHeight || 0
   const extraWidth = lockAspectRatioExtraWidth || 0
+
   if (hasDirection("right", directionRet.value)) {
     newWidth = original.width + ((clientX - original.x) * resizeRatio) / scale
     if (lockAspectRatio) {
@@ -569,8 +577,8 @@ function onMouseUp(event: MouseEvent | TouchEvent) {
     delta
   })
   if (props.size) {
-    if (props.size.width !== undefined) widthRet.value = props.size.width
-    if (props.size.height !== undefined) widthRet.value = props.size.height
+    if (props.size?.width !== undefined) widthRet.value = props.size.width
+    if (props.size?.height !== undefined) widthRet.value = props.size.height
   }
   unbindEvents()
   isResizing.value = false
@@ -608,13 +616,7 @@ function onMouseMove(event: MouseEvent | TouchEvent) {
   minHeight = max.minHeight
 
   // Calculate new size
-  let { newHeight, newWidth } = calculateNewSizeFromDirection(
-    clientX,
-    clientY
-  ) as {
-    newHeight: number
-    newWidth: number
-  }
+  let { newHeight, newWidth } = calculateNewSizeFromDirection(clientX, clientY)
 
   // Calculate max size from boundary settings
   const boundaryMax = calculateNewMaxFromBoundary(maxWidth, maxHeight)
