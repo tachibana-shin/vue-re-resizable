@@ -100,7 +100,8 @@ const props = withDefaults(defineProps<{
     bottomLeft: true,
     topLeft: true
   },
-  // eslint-disable-next-line vue/require-valid-default-prop
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   grid: [1, 1],
   lockAspectRatio: false,
   lockAspectRatioExtraWidth: 0,
