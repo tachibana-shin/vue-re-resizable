@@ -1,6 +1,6 @@
 import { describe, test, expect, afterEach } from "vitest"
 import { render, screen, fireEvent, cleanup } from "@testing-library/vue"
-import Resizable from "./index.vue"
+import Resizable from "./Resizable.vue"
 
 function is(a: unknown, b: unknown) {
   expect(a).toEqual(b)

@@ -37,6 +37,7 @@ module.exports = {
   ],
 
   plugins: [
+    // "@tachibana-shin/eslint-config",
     // required to apply rules which need type information
     "@typescript-eslint",
 

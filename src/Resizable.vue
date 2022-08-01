@@ -21,10 +21,10 @@
       <Resizer
         v-for="[item] in Object.entries(enable).filter(([key, val]) => val)"
         :key="item"
-        :direction="item"
-        @resize:start="onResizeStart($event, item)"
-        :style="resizerStyles?.[item]"
-        :class="resizerClasses?.[item]"
+        :direction="item as Direction"
+        @resize:start="onResizeStart($event, item as Direction)"
+        :style="resizerStyles?.[item as Direction]"
+        :class="resizerClasses?.[item as Direction]"
       >
         <slot :name="`resizer-${item}`" />
       </Resizer>
@@ -38,7 +38,6 @@ import {
   reactive,
   Ref,
   ref,
-  withDefaults,
   onMounted,
   onBeforeMount
 } from "vue"
@@ -61,9 +60,9 @@ import {
   isTouchEvent,
   snap
 } from "./helpers"
-import Resizer from "./resizer.vue"
+import Resizer from "./Resizer.vue"
 
-interface Props {
+const props = defineProps<{
   grid?: [number, number]
   snap?: {
     x?: number[]
@@ -88,27 +87,7 @@ interface Props {
   defaultSize?: Partial<Size>
   scale?: number
   resizeRatio?: number
-}
-const props = withDefaults(defineProps<Props>(), {
-  enable: {
-    top: true,
-    right: true,
-    bottom: true,
-    left: true,
-    topRight: true,
-    bottomRight: true,
-    bottomLeft: true,
-    topLeft: true
-  },
-  // eslint-disable-next-line vue/require-valid-default-prop
-  grid: [1, 1],
-  lockAspectRatio: false,
-  lockAspectRatioExtraWidth: 0,
-  lockAspectRatioExtraHeight: 0,
-  scale: 1,
-  resizeRatio: 1,
-  snapGap: 0
-})
+}>()
 const emit = defineEmits<{
   (
     name: "resize:start",
@@ -323,7 +302,7 @@ let targetLeft = 0
 let targetTop = 0
 
 onMounted(() => {
-  const computedStyle = window.value.getComputedStyle(resizable.value)
+  const computedStyle = window.value!.getComputedStyle(resizable.value!)
   widthRet.value = widthRet.value ?? size.value.width
   heightRet.value = heightRet.value ?? size.value.height
   flexBasisRet.value =
@@ -661,13 +640,13 @@ function onMouseMove(event: MouseEvent | TouchEvent) {
   const width = widthRet.value
   if (width && typeof width === "string") {
     if (width.endsWith("%")) {
-      const percent = (newWidth2 / parentSize.width) * 100
+      const percent = (newWidth2 as number / parentSize.width) * 100
       newWidth2 = `${percent}%`
     } else if (width.endsWith("vw")) {
-      const vw = (newWidth2 / window.value.innerWidth) * 100
+      const vw = (newWidth2 as number / window.value.innerWidth) * 100
       newWidth2 = `${vw}vw`
     } else if (width.endsWith("vh")) {
-      const vh = (newWidth2 / window.value.innerHeight) * 100
+      const vh = (newWidth2 as number / window.value.innerHeight) * 100
       newWidth2 = `${vh}vh`
     }
   }
@@ -676,13 +655,13 @@ function onMouseMove(event: MouseEvent | TouchEvent) {
   const height = heightRet.value
   if (height && typeof height === "string") {
     if (height.endsWith("%")) {
-      const percent = (newHeight2 / parentSize.height) * 100
+      const percent = (newHeight2 as number / parentSize.height) * 100
       newHeight2 = `${percent}%`
     } else if (height.endsWith("vw")) {
-      const vw = (newHeight2 / window.value.innerWidth) * 100
+      const vw = (newHeight2 as number / window.value.innerWidth) * 100
       newHeight2 = `${vw}vw`
     } else if (height.endsWith("vh")) {
-      const vh = (newHeight2 / window.value.innerHeight) * 100
+      const vh = (newHeight2 as number / window.value.innerHeight) * 100
       newHeight2 = `${vh}vh`
     }
   }

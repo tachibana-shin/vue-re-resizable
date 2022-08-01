@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Resizable } from '../src';
-import { storiesOf } from '@storybook/react';
+import Resizable from "../src/index.vue"
+
+import { storiesOf } from '@storybook/vue';
 import { style } from './style';
 
 storiesOf('aspect', module).add('default', () => (
