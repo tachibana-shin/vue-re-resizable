@@ -1,5 +1,5 @@
 node_modules/
 example/dist/
-lib/
+dist/
 npm-debug.log
 .rpt2_cache

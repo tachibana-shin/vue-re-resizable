@@ -89,6 +89,8 @@ const props = withDefaults(defineProps<{
   resizeRatio?: number
 }>(), {
   enable: {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     top: true,
     right: true,
     bottom: true,
