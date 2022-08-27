@@ -21,7 +21,7 @@
       <Resizer
         v-for="[item] in Object.entries(enable).filter(([key, val]) => val)"
         :key="item"
-        :direction="item as Direction"
+        :direction="(item as Direction)"
         @resize:start="onResizeStart($event, item as Direction)"
         :style="resizerStyles?.[item as Direction]"
         :class="resizerClasses?.[item as Direction]"

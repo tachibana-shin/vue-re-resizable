@@ -3,10 +3,10 @@ export type Direction =
   | "right"
   | "bottom"
   | "left"
-  | "top-right"
-  | "bottom-right"
-  | "bottom-left"
-  | "top-left"
+  | "topRight"
+  | "bottomRight"
+  | "bottomLeft"
+  | "topLeft"
 
 export type Enable = {
   // eslint-disable-next-line no-unused-vars
