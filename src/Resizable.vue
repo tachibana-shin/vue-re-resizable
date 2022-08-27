@@ -33,14 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  reactive,
-  Ref,
-  ref,
-  onMounted,
-  onBeforeMount
-} from "vue"
+import { computed, reactive, Ref, ref, onMounted, onBeforeMount } from "vue"
 import {
   Direction,
   Enable,
@@ -62,54 +55,57 @@ import {
 } from "./helpers"
 import Resizer from "./Resizer.vue"
 
-const props = withDefaults(defineProps<{
-  grid?: [number, number]
-  snap?: {
-    x?: number[]
-    y?: number[]
-  }
-  snapGap?: number
-  bounds?: "parent" | "window" | HTMLElement
-  boundsByDirection?: boolean
-  size?: Partial<Size>
-  minWidth?: string | number
-  minHeight?: string | number
-  maxWidth?: string | number
-  maxHeight?: string | number
-  lockAspectRatio?: boolean | number
-  lockAspectRatioExtraWidth?: number
-  lockAspectRatioExtraHeight?: number
-  enable?: Enable
+const props = withDefaults(
+  defineProps<{
+    grid?: [number, number]
+    snap?: {
+      x?: number[]
+      y?: number[]
+    }
+    snapGap?: number
+    bounds?: "parent" | "window" | HTMLElement
+    boundsByDirection?: boolean
+    size?: Partial<Size>
+    minWidth?: string | number
+    minHeight?: string | number
+    maxWidth?: string | number
+    maxHeight?: string | number
+    lockAspectRatio?: boolean | number
+    lockAspectRatioExtraWidth?: number
+    lockAspectRatioExtraHeight?: number
+    enable?: Enable
 
-  resizerStyles?: ResizerStyles
-  resizerClasses?: ResizerClasses
+    resizerStyles?: ResizerStyles
+    resizerClasses?: ResizerClasses
 
-  defaultSize?: Partial<Size>
-  scale?: number
-  resizeRatio?: number
-}>(), {
-  enable: {
+    defaultSize?: Partial<Size>
+    scale?: number
+    resizeRatio?: number
+  }>(),
+  {
+    enable: {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      top: true,
+      right: true,
+      bottom: true,
+      left: true,
+      topRight: true,
+      bottomRight: true,
+      bottomLeft: true,
+      topLeft: true
+    },
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    top: true,
-    right: true,
-    bottom: true,
-    left: true,
-    topRight: true,
-    bottomRight: true,
-    bottomLeft: true,
-    topLeft: true
-  },
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  grid: [1, 1],
-  lockAspectRatio: false,
-  lockAspectRatioExtraWidth: 0,
-  lockAspectRatioExtraHeight: 0,
-  scale: 1,
-  resizeRatio: 1,
-  snapGap: 0
-})
+    grid: [1, 1],
+    lockAspectRatio: false,
+    lockAspectRatioExtraWidth: 0,
+    lockAspectRatioExtraHeight: 0,
+    scale: 1,
+    resizeRatio: 1,
+    snapGap: 0
+  }
+)
 const emit = defineEmits<{
   (
     name: "resize:start",
@@ -292,6 +288,10 @@ const original = reactive<{
 })
 const widthRet = ref<number | string>(propsSize.value.width)
 const heightRet = ref<number | string>(propsSize.value.height)
+defineExpose({
+  width: widthRet,
+  height: heightRet
+})
 const backgroundStyle = reactive<Record<string, string | number>>({
   height: "100%",
   width: "100%",
@@ -663,13 +663,13 @@ function onMouseMove(event: MouseEvent | TouchEvent) {
   const width = widthRet.value
   if (width && typeof width === "string") {
     if (width.endsWith("%")) {
-      const percent = (newWidth2 as number / parentSize.width) * 100
+      const percent = ((newWidth2 as number) / parentSize.width) * 100
       newWidth2 = `${percent}%`
     } else if (width.endsWith("vw")) {
-      const vw = (newWidth2 as number / window.value.innerWidth) * 100
+      const vw = ((newWidth2 as number) / window.value.innerWidth) * 100
       newWidth2 = `${vw}vw`
     } else if (width.endsWith("vh")) {
-      const vh = (newWidth2 as number / window.value.innerHeight) * 100
+      const vh = ((newWidth2 as number) / window.value.innerHeight) * 100
       newWidth2 = `${vh}vh`
     }
   }
@@ -678,13 +678,13 @@ function onMouseMove(event: MouseEvent | TouchEvent) {
   const height = heightRet.value
   if (height && typeof height === "string") {
     if (height.endsWith("%")) {
-      const percent = (newHeight2 as number / parentSize.height) * 100
+      const percent = ((newHeight2 as number) / parentSize.height) * 100
       newHeight2 = `${percent}%`
     } else if (height.endsWith("vw")) {
-      const vw = (newHeight2 as number / window.value.innerWidth) * 100
+      const vw = ((newHeight2 as number) / window.value.innerWidth) * 100
       newHeight2 = `${vw}vw`
     } else if (height.endsWith("vh")) {
-      const vh = (newHeight2 as number / window.value.innerHeight) * 100
+      const vh = ((newHeight2 as number) / window.value.innerHeight) * 100
       newHeight2 = `${vh}vh`
     }
   }
