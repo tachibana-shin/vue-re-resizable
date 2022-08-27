@@ -1,6 +1,6 @@
 {
   "name": "vue-re-resizable",
-  "version": "6.9.19-beta.2",
+  "version": "6.9.19-beta.3",
   "description": "Resizable component for React.",
   "title": "vue-re-resizable",
   "main": "./dist/main.mjs",
